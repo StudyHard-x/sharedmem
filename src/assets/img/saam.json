@@ -1,0 +1,31 @@
+[
+    {  "paymentId": 1,
+           "userId": 0,
+            "username": "1",
+            "vehicleId": 1,
+            "fee": 1,
+            "createTime": "2022-11-01T16:54:51.000+00:00",
+            "startTime": "2022-11-01T16:54:53.000+00:00",
+            "endTime": "2022-11-01T16:54:55.000+00:00",
+            "note": null,
+            "slocationId": 1,
+            "elocationId": 1,
+            "slocation": "aaa",
+            "elocation":"aaa"
+        },
+        {
+                "paymentId": 2,
+                "userId": 1,
+                "username": "2",
+                "vehicleId": 2,
+                "fee": 2,
+                "createTime": "2022-11-01T16:54:51.000+00:00",
+                "startTime": "2022-11-01T16:54:53.000+00:00",
+                "endTime": "2022-11-01T16:54:55.000+00:00",
+                "note": null,
+                "slocationId": 1,
+                "elocationId": 1,
+                "slocation": "aaa",
+                "elocation": "aaa"
+        }
+]

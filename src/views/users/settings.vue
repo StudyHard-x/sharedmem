@@ -24,7 +24,7 @@
             </el-table-column>
             <el-table-column align="center" label="operation" min-width="300">
               <template slot-scope="scope">
-                <el-button size="mini" type="primary" @click="handleDelet(scope.$index, scope.row)">edit</el-button>
+                <el-button size="mini" type="primary" @click="handleEdit(scope.$index, scope.row)">edit</el-button>
                 <el-button size="mini" type="danger" @click="handleDelet(scope.$index, scope.row)">delete</el-button>
               </template>
             </el-table-column>
@@ -39,14 +39,16 @@
 <script>
   // 导入组
 import navcon from "../../components/navcon";
+  import {getTrustEmail, userRigster} from "../../api/userMG";
+  import {Message} from "element-ui";
 
   export default {
     name: 'homepage',
     data() {
       return {
-        userInfo :[],
-        userGet:{
-          userId : 0
+        loading: false,
+        form:{
+          id : 0,
         },
         path:'',
         listData:[
@@ -67,16 +69,42 @@ import navcon from "../../components/navcon";
       navcon
     },
     methods: {
+      AddNew(){
+
+      },
+      getInfo(){
+        console.log(this.form.id)
+        getTrustEmail('id', this.form.id)
+          .then(res => {
+            console.log('res: ',res)
+            if (res.code == 2) {
+              // Message({
+              //   type: 'info',
+              //   message : res.msg
+              // })
+            } else {
+              // Message({
+              //   type: 'success',
+              //   message: 'register success'
+              // })
+              // setTimeout(() => {
+              //   this.$router.push({ path: '/' })
+              // },1000)
+            }
+          })
+          .catch(err => {
+            this.$message.error('fail')
+          })
+      }
     },
     created() {
+      this.form.id = JSON.parse(localStorage.getItem('userData')).id
+      this.getInfo()
+
     },
     beforeUpdate() {},
     beforeMount() {
-      // login success
-      this.$message({
-        message: 'login success',
-        type: 'success'
-      })
+
     }
   }
 </script>

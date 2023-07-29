@@ -1,42 +1,29 @@
 <template>
     <div class="register-box">
 
-      <p style="font-weight: bold">admin</p>
-      <p>username: admin</p>
-      <p>password: 123</p>
-
-      <p style="font-weight: bold">user</p>
-      <p>username: mei</p>
-      <p>password: 123</p>
-
-      <p>username: mike12</p>
-      <p>password: 123</p>
-
-      <p>username: test</p>
-      <p>password: 333</p>
-
-<!--      <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="150px">-->
-<!--        <el-form-item label="Username" prop="username">-->
-<!--          <el-input v-model.number="ruleForm.username"></el-input>-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="Account" prop="account">-->
-<!--          <el-input v-model.number="ruleForm.account"></el-input>-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="Password" prop="password">-->
-<!--          <el-input type="password" v-model="ruleForm.password" autocomplete="off"></el-input>-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="Re-enter password" prop="checkPass">-->
-<!--          <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>-->
-<!--        </el-form-item>-->
-<!--        <el-form-item>-->
-<!--          <el-button type="primary" @click="submitForm('ruleForm')">Sign up</el-button>-->
-<!--        </el-form-item>-->
-<!--      </el-form>-->
+      <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="150px">
+        <el-form-item label="Username" prop="username">
+          <el-input v-model.number="ruleForm.username"></el-input>
+        </el-form-item>
+        <el-form-item label="Email" prop="email">
+          <el-input v-model="ruleForm.email"></el-input>
+        </el-form-item>
+        <el-form-item label="Password" prop="password">
+          <el-input type="password" v-model="ruleForm.password" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="Re-enter password" prop="checkPass">
+          <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="submitForm('ruleForm')">Sign up</el-button>
+        </el-form-item>
+      </el-form>
     </div>
 </template>
 
 <script>
     import {userRigster} from "../../api/userMG";
+    import {Message} from "element-ui";
 
     export default {
       name: "userregister",
@@ -51,27 +38,11 @@
         };
         const checkAccount = (rule, value, callback) =>{
           if(value===''){
-            callback(new Error('Please enter user account'));
+            callback(new Error('Please enter email'));
           }else {
             callback();
           }
         };
-        // var checkAge = (rule, value, callback) => {
-        //   if (!value) {
-        //     return callback(new Error('年龄不能为空'));
-        //   }
-        //   setTimeout(() => {
-        //     if (!Number.isInteger(value)) {
-        //       callback(new Error('请输入数字值'));
-        //     } else {
-        //       if (value < 18) {
-        //         callback(new Error('必须年满18岁'));
-        //       } else {
-        //         callback();
-        //       }
-        //     }
-        //   }, 1000);
-        // };
         var validatePass = (rule, value, callback) => {
           if (value === '') {
             callback(new Error('Please type your password'));
@@ -94,7 +65,7 @@
         return {
           ruleForm: {
             username:'',
-            account:'',
+            email:'',
             password: '',
             checkPass: '',
 
@@ -102,7 +73,7 @@
           },
           registerForm:{
             username: '',
-            account:'',
+            email:'',
             userType: 1,//1:customer 2:operator 3:manager
             note:'',
             gender:'',
@@ -113,7 +84,7 @@
             username: [
               {validator: checkName, trigger:'blur'}
             ],
-            account:[
+            email:[
               {validator: checkAccount, trigger:'blur'}
             ],
             password: [
@@ -135,28 +106,36 @@
       // 方法集合
       methods: {
         submitForm(formName) {
-          this.registerForm.account = this.ruleForm.account
-          this.registerForm.password = this.ruleForm.password
-          this.registerForm.username = this.ruleForm.username
-          userRigster(this.registerForm)
-            .then(res => {
-              if (res) {
-                this.$message({
-                  type: 'success',
-                  message: 'register success'
+          this.$refs[formName].validate(valid => {
+            if (valid){
+              this.registerForm.email = this.ruleForm.email
+              this.registerForm.password = this.ruleForm.password
+              this.registerForm.username = this.ruleForm.username
+              userRigster(this.registerForm)
+                .then(res => {
+                  console.log('res: ',res)
+                  if (res.code == 2) {
+                    Message({
+                      type: 'info',
+                      message : res.msg
+                    })
+                  } else {
+                    Message({
+                      type: 'success',
+                      message: 'register success'
+                    })
+                    setTimeout(() => {
+                      this.$router.push({ path: '/' })
+                    },1000)
+                  }
                 })
-              } else {
-                this.$message({
-                  type: 'info',
-                  message: res.msg
+                .catch(err => {
+                  this.$message.error('fail')
                 })
-              }
-            })
-            .catch(err => {
-              this.$message.error('fail')
-            })
+            }
+          })
         }
-
+        ////
       }
     }
 </script>

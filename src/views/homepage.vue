@@ -15,6 +15,7 @@
 <script>
   // 导入组
 import navcon from "../components/navcon";
+import {Message} from "element-ui"
 
   export default {
     name: 'homepage',
@@ -46,7 +47,7 @@ import navcon from "../components/navcon";
     beforeUpdate() {},
     beforeMount() {
       // login success
-      this.$message({
+      Message({
         message: 'login success',
         type: 'success'
       })

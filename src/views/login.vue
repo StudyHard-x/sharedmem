@@ -116,64 +116,48 @@
           this.rememberpwd = true
         }
       },
+
       submitForm(formName) {
         this.$refs[formName].validate(valid => {
           if (valid) {
-            console.log(this.ruleForm)
-            localStorage.setItem('userData',JSON.stringify(this.ruleForm))
-            this.$router.push({ path: '/home' })
+            this.logining = true
+            login(this.ruleForm).then(res => {
+              if (res) {
+                console.log(res)
+                setTimeout(() => {
+                  this.logining = false
+                  localStorage.setItem('logintoken', res.data.token)
+                  // 缓存用户个人信息
+                  getLoginUser(res.data.token).then(resuser =>{
+                    console.log('login user:', resuser.data)
+                    if(resuser){
+                      setTimeout(()=>{
+                        // console.log(resuser.data.type)
+                        localStorage.setItem('userData',JSON.stringify(resuser.data))
+                        this.$store.commit('login', 'true')
+                          this.$router.push({ path: '/home' })
+                      },1000)
+                    }
+                  })
+
+                }, 1000)
+              } else {
+                Message.error(res.msg)
+                this.logining = false
+                return false
+              }
+            }).catch(err => {
+              Message.error(err.response.data)
+              this.logining = false
+            })
+          } else {
+            // this.getcode()
+            Message.error('please enter username and password！')
+            this.logining = false
+            return false
           }
         })
       },
-
-
-
-      // submitForm(formName) {
-      //   this.$refs[formName].validate(valid => {
-      //     if (valid) {
-      //       this.logining = true
-      //       login(this.ruleForm).then(res => {
-      //         if (res) {
-      //           setTimeout(() => {
-      //             this.logining = false
-      //             localStorage.setItem('logintoken', res.data.token)
-      //             // 缓存用户个人信息
-      //             getLoginUser(res.data.token).then(resuser =>{
-      //               console.log('login user:', resuser.data)
-      //               if(resuser){
-      //                 setTimeout(()=>{
-      //                   // console.log(resuser.data.type)
-      //                   localStorage.setItem('userData',JSON.stringify(resuser.data))
-      //                   localStorage.setItem('userRole',JSON.stringify(resuser.data.type))
-      //                   this.$store.commit('login', 'true')
-      //                   if(resuser.data.type == 2){
-      //                     this.$router.push({ path: '/home' })
-      //                   }
-      //                   if(resuser.data.type == 0){
-      //                     this.$router.push({path:'/operators/track'})
-      //                   }
-      //                 },1000)
-      //               }
-      //             })
-      //
-      //           }, 1000)
-      //         } else {
-      //           Message.error(res.msg)
-      //           this.logining = false
-      //           return false
-      //         }
-      //       }).catch(err => {
-      //         Message.error(err.response.data)
-      //         this.logining = false
-      //       })
-      //     } else {
-      //       // this.getcode()
-      //       Message.error('please enter username and password！')
-      //       this.logining = false
-      //       return false
-      //     }
-      //   })
-      // },
     }
   }
 </script>

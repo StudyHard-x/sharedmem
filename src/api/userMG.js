@@ -23,7 +23,7 @@ export const loginout = (params, params2) => {
 
 // export const loginout = () => { return axios.delete("/api/login?&token=" + localStorage.getItem('logintoken')).then(res => res.data) };
 export const userRigster = (params) =>{
-  return reqA("post", "api/user/register", params)
+  return req("post", "api/register/", params)
 }
 
 // user info
@@ -31,3 +31,7 @@ export const getUserInfo = () =>{
   return req("get", "api/users/page")
 }
 
+export const getTrustEmail = (params,params2) =>{
+  console.log(params,params2)
+  return req("get", "api/users/trustemail/",params,params2)
+}
